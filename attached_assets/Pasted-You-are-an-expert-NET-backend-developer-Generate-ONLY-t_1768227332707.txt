@@ -1,0 +1,73 @@
+You are an expert .NET backend developer. Generate ONLY the backend for a university project called "Campus Lost & Found".
+
+IMPORTANT REPLIT CONSTRAINTS:
+- Keep the project small and runnable on Replit free tier.
+- Do NOT generate Docker files.
+- Do NOT generate a multi-project solution.
+- Create a single ASP.NET Core Web API project targeting .NET 8.
+- Use EF Core with SQLite by default so it runs easily on Replit.
+- BUT write the code so switching to PostgreSQL is easy: read connection string from environment variable.
+- Provide all files needed in a single project folder.
+
+FUNCTIONAL SCOPE (BACKEND ONLY):
+1) Authentication (JWT)
+   - POST /auth/register (email, password)
+   - POST /auth/login (email, password) returns JWT
+   - GET /auth/me returns current user profile
+   - Roles: User, Admin
+   - Store passwords using ASP.NET Core PasswordHasher
+
+2) Listings (Lost/Found)
+   - Fields: id (Guid), ownerId, type (Lost/Found), title, description, category, location, eventDate, photoUrl (optional), status (Open/Claimed/Closed/Hidden), createdAt, updatedAt
+   - Endpoints:
+     - GET /listings (with filters: keyword, category, type, status, dateFrom, dateTo, page, pageSize)
+     - POST /listings (auth required)
+     - GET /listings/{id}
+     - PUT /listings/{id} (owner only)
+     - DELETE /listings/{id} (owner only)
+
+3) Claims
+   - Fields: id, listingId, requesterId, message, status (Pending/Accepted/Rejected), createdAt, decidedAt
+   - Endpoints:
+     - POST /listings/{id}/claims (auth required)
+     - GET /claims/mine (auth required)
+     - POST /claims/{id}/accept (listing owner only)
+     - POST /claims/{id}/reject (listing owner only)
+
+BUSINESS RULES:
+- User must be authenticated to create/edit/delete listings and submit claims.
+- Only listing owner can edit/delete the listing.
+- Only listing owner can accept/reject claims for that listing.
+- A user cannot submit a claim for their own listing.
+- A listing must be Open to accept new claims.
+- Prevent duplicate Pending claim by same requester for same listing (return 409 Conflict).
+- When claim is accepted: claim status becomes Accepted, decidedAt set, listing status becomes Claimed.
+- When claim is rejected: claim status becomes Rejected, decidedAt set, listing stays Open.
+
+ADMIN (minimal):
+- Seed one admin user on startup in Development:
+  - admin@campus.local / Admin123!
+- Admin endpoints:
+  - POST /admin/listings/{id}/hide
+  - POST /admin/listings/{id}/unhide
+  - GET /admin/users
+  - POST /admin/users/{id}/deactivate
+  - POST /admin/users/{id}/activate
+
+QUALITY:
+- Use DTOs, do not return EF entities directly.
+- Add validation and return proper HTTP codes: 400/401/403/404/409.
+- Add Swagger and enable it in Development.
+- Add simple global exception handling middleware.
+- Keep code clean but minimal (suitable for a small academic project).
+
+OUTPUT REQUIRED:
+- Create the full backend project structure.
+- Provide Program.cs, DbContext, Entities, DTOs, Services, and Controllers.
+- Provide appsettings.json with JWT settings and connection string.
+- Provide instructions at the end:
+  - How to run
+  - How to set environment variables on Replit
+  - How to test endpoints with sample curl commands
+
+Start now and generate the backend code.
