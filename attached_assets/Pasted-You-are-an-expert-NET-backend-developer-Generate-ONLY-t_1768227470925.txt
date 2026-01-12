@@ -1,0 +1,107 @@
+You are an expert .NET backend developer. Generate ONLY the backend for a university project called "Campus Lost & Found".
+
+IMPORTANT REPLIT CONSTRAINTS:
+- Must run on Replit free tier.
+- Do NOT use authentication, authorization, JWT, or roles.
+- Do NOT use Docker.
+- Create a single ASP.NET Core Web API project targeting .NET 8.
+- Use EF Core with SQLite by default (file-based DB).
+- Read connection string from appsettings.json.
+- Keep dependencies minimal.
+- Provide all code in one project folder.
+
+PROJECT SCOPE (BACKEND ONLY, NO AUTH):
+
+1) Listings (Lost / Found)
+   Entity: Listing
+   Fields:
+     - id (Guid)
+     - ownerName (string)   // simple replacement instead of user accounts
+     - type (Lost | Found)
+     - title
+     - description
+     - category
+     - location
+     - eventDate (DateTime)
+     - photoUrl (nullable)
+     - status (Open | Claimed | Closed | Hidden)
+     - createdAt
+     - updatedAt
+
+   Endpoints:
+     - GET /listings
+       Supports filters:
+         keyword (search title + description)
+         category
+         type
+         status
+         dateFrom
+         dateTo
+         page
+         pageSize
+     - POST /listings
+     - GET /listings/{id}
+     - PUT /listings/{id}
+     - DELETE /listings/{id}
+
+2) Claims
+   Entity: Claim
+   Fields:
+     - id (Guid)
+     - listingId (Guid)
+     - requesterName (string)
+     - message
+     - status (Pending | Accepted | Rejected)
+     - createdAt
+     - decidedAt (nullable)
+
+   Endpoints:
+     - POST /listings/{id}/claims
+     - GET /claims
+     - POST /claims/{id}/accept
+     - POST /claims/{id}/reject
+
+BUSINESS RULES (STILL ENFORCED):
+- A listing must be in status Open to accept new claims.
+- Prevent duplicate Pending claim by same requesterName for same listing (return 409 Conflict).
+- When a claim is Accepted:
+    - claim status becomes Accepted
+    - decidedAt is set
+    - listing status becomes Claimed
+- When a claim is Rejected:
+    - claim status becomes Rejected
+    - decidedAt is set
+    - listing remains Open
+- Only one claim can be Accepted per listing.
+
+QUALITY REQUIREMENTS:
+- Use DTOs for requests and responses.
+- Do not return EF entities directly.
+- Add validation (required fields, string length, date checks).
+- Return proper HTTP status codes:
+    200 OK
+    201 Created
+    400 Bad Request
+    404 Not Found
+    409 Conflict
+- Add Swagger/OpenAPI and enable it by default.
+- Add simple global exception handling middleware.
+- Seed sample data (2 listings + 1 claim) on startup for development.
+
+TECHNICAL STRUCTURE:
+- Program.cs
+- AppDbContext
+- Entities (Listing, Claim)
+- DTOs
+- Services (ListingService, ClaimService)
+- Controllers (ListingsController, ClaimsController)
+
+OUTPUT REQUIRED:
+- Generate the complete project structure and all necessary files.
+- Ensure the project builds and runs without any manual fixes.
+- At the end, provide:
+   - How to run the app on Replit
+   - Swagger URL
+   - Example curl requests for each endpoint
+
+START GENERATING THE CODE NOW.
