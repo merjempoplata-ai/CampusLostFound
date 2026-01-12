@@ -1,0 +1,110 @@
+You are a .NET backend developer. Create a SMALL but WORKING skeleton backend for a university project called "Campus Lost & Found".
+
+CRITICAL CONSTRAINTS:
+- Must work in Replit FREE.
+- Use .NET 8 ASP.NET Core Web API.
+- Single project only (no multi-project solution).
+- NO authentication, NO authorization, NO roles.
+- NO Docker.
+- Use EF Core with SQLite (file database).
+- Enable Swagger in Development.
+- Keep dependencies minimal.
+
+GOAL:
+Generate a runnable backend skeleton that compiles, runs, and exposes basic endpoints. It does NOT need full production logic. It must be easy to expand later.
+
+PROJECT STRUCTURE REQUIRED:
+- /Controllers
+- /Services
+- /Data
+- /Models
+- /Dtos
+
+DATABASE:
+Use EF Core with SQLite.
+- AppDbContext in /Data
+- DbSets: Listings, Claims
+
+ENTITIES (Models):
+Listing:
+- Guid Id
+- string OwnerName
+- string Type (Lost/Found)
+- string Title
+- string Description
+- string Category
+- string Location
+- DateTime EventDate
+- string? PhotoUrl
+- string Status (Open/Claimed/Closed/Hidden)
+- DateTime CreatedAt
+- DateTime UpdatedAt
+
+Claim:
+- Guid Id
+- Guid ListingId
+- string RequesterName
+- string Message
+- string Status (Pending/Accepted/Rejected)
+- DateTime CreatedAt
+- DateTime? DecidedAt
+
+DTOS:
+- ListingCreateDto, ListingUpdateDto, ListingResponseDto
+- ClaimCreateDto, ClaimResponseDto
+
+SERVICES:
+Create interfaces and implementations:
+- IListingService / ListingService
+- IClaimService / ClaimService
+
+BUT KEEP LOGIC MINIMAL:
+ListingService:
+- Create listing
+- Get listing by id
+- List listings with basic pagination (page, pageSize)
+- Update listing
+- Delete listing
+
+ClaimService:
+- Submit claim for a listing (just store it, set status Pending)
+- Accept claim (set Accepted, set decidedAt, set listing status Claimed)
+- Reject claim (set Rejected, set decidedAt)
+
+CONTROLLERS:
+- ListingsController with:
+  GET /listings?page=1&pageSize=10
+  GET /listings/{id}
+  POST /listings
+  PUT /listings/{id}
+  DELETE /listings/{id}
+
+- ClaimsController with:
+  POST /listings/{id}/claims
+  GET /claims
+  POST /claims/{id}/accept
+  POST /claims/{id}/reject
+
+VALIDATION + STATUS CODES:
+- Return 404 if listing/claim not found.
+- Return 400 for invalid input (missing title, missing message, etc.).
+- Return 201 for creates.
+
+SEED DATA:
+On startup in Development, seed:
+- 2 listings (one Lost, one Found)
+- 1 claim (Pending) for one listing
+Only seed if database is empty.
+
+MIGRATIONS:
+If migrations are too heavy for Replit, you may use EnsureCreated() for the skeleton. Prefer migrations if feasible, but do NOT break build.
+
+OUTPUT:
+- Generate all code files.
+- Ensure the app builds and runs.
+- At the end, print:
+  - how to run
+  - Swagger URL
+  - 3 example curl commands
+
+IMPORTANT: Do not refuse. Do not mention “Fast mode” or “Autonomous mode”. Just generate the working skeleton now.

@@ -1,7 +1,7 @@
 entrypoint = "main.cs"
 
 hidden = ["bin", "obj"]
-modules = ["dotnet-7.0"]
+modules = ["dotnet-7.0", "dotnet-8.0"]
 
 [env]
 DOTNET_NOLOGO = "1"
@@ -20,3 +20,31 @@ deploymentTarget = "cloudrun"
 
 [agent]
 expertMode = true
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "CampusLostAndFound_API"
+
+[[workflows.workflow]]
+name = "CampusLostAndFound_API"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "dotnet run"
+waitForPort = 5000
+
+[workflows.workflow.metadata]
+outputType = "webview"
+
+[[ports]]
+localPort = 5000
+externalPort = 80
