@@ -5,11 +5,18 @@ using Microsoft.AspNetCore.Mvc;
 namespace CampusLostAndFound.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/listings")]
     public class ListingsController(IListingService service) : ControllerBase
     {
         [HttpGet]
-        public async Task<IActionResult> GetAll(int page = 1, int pageSize = 10) => Ok(await service.GetAllAsync(page, pageSize));
+        public async Task<IActionResult> GetAll(
+            [FromQuery] int page = 1,
+            [FromQuery] int limit = 9,
+            [FromQuery] string? type = null,
+            [FromQuery] string? search = null)
+        {
+            return Ok(await service.GetAllAsync(page, limit, type, search));
+        }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(Guid id)

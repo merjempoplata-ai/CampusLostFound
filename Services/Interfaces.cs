@@ -6,8 +6,7 @@ namespace CampusLostAndFound.Services
     {
         Task<ListingResponseDto> CreateAsync(ListingCreateDto dto);
         Task<ListingResponseDto?> GetByIdAsync(Guid id);
-        Task<IEnumerable<ListingResponseDto>> GetAllAsync(int page, int pageSize);
-        Task<ListingResponseDto?> UpdateAsync(Guid id, ListingUpdateDto dto);
+        Task<PaginatedListingsResponseDto> GetAllAsync(int page, int limit, string? type, string? search); Task<ListingResponseDto?> UpdateAsync(Guid id, ListingUpdateDto dto);
         Task<bool> DeleteAsync(Guid id);
     }
 

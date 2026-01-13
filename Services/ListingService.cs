@@ -35,13 +35,41 @@ namespace CampusLostAndFound.Services
             return listing == null ? null : Map(listing);
         }
 
-        public async Task<IEnumerable<ListingResponseDto>> GetAllAsync(int page, int pageSize)
+        public async Task<PaginatedListingsResponseDto> GetAllAsync(int page, int limit, string? type, string? search)
         {
-            var listings = await context.Listings
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
+            var query = context.Listings.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(type))
+            {
+                query = query.Where(l => l.Type == type);
+            }
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                var searchLower = search.ToLower();
+                query = query.Where(l =>
+                    l.Title.ToLower().Contains(searchLower) ||
+                    l.Description.ToLower().Contains(searchLower) ||
+                    l.Category.ToLower().Contains(searchLower) ||
+                    l.Location.ToLower().Contains(searchLower));
+            }
+
+            query = query.OrderByDescending(l => l.EventDate);
+
+            var total = await query.CountAsync();
+            var totalPages = (int)Math.Ceiling(total / (double)limit);
+
+            var items = await query
+                .Skip((page - 1) * limit)
+                .Take(limit)
                 .ToListAsync();
-            return listings.Select(Map);
+
+            return new PaginatedListingsResponseDto(
+                items.Select(Map),
+                total,
+                totalPages,
+                page
+            );
         }
 
         public async Task<ListingResponseDto?> UpdateAsync(Guid id, ListingUpdateDto dto)
@@ -71,7 +99,7 @@ namespace CampusLostAndFound.Services
             return true;
         }
 
-        private static ListingResponseDto Map(Listing l) => 
+        private static ListingResponseDto Map(Listing l) =>
             new(l.Id, l.OwnerName, l.Type, l.Title, l.Description, l.Category, l.Location, l.EventDate, l.PhotoUrl, l.Status, l.CreatedAt, l.UpdatedAt);
     }
 }
