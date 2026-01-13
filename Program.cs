@@ -11,7 +11,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("dev", p =>
-        p.WithOrigins("http://localhost:5173")
+        p.WithOrigins("http://localhost:5174")
          .AllowAnyHeader()
          .AllowAnyMethod());
 });
@@ -32,6 +32,8 @@ app.UseSwaggerUI();
 
 //app.UseHttpsRedirection();
 app.UseCors("dev");
+app.MapGet("/", () => Results.Ok("CampusLostAndFound API is running"));
+app.MapGet("/health", () => Results.Ok("OK"));
 //app.UseAuthorization();
 app.MapControllers();
 
