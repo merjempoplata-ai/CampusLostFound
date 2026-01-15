@@ -41,5 +41,12 @@ namespace CampusLostAndFound.Controllers
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id) => await service.DeleteAsync(id) ? NoContent() : NotFound();
+
+        [HttpGet("report")]
+        public async Task<IActionResult> GetReport([FromQuery] int year, [FromQuery] int month)
+        {
+            if (month < 1 || month > 12) return BadRequest("Invalid month");
+            return Ok(await service.GetMonthlyReportAsync(year, month));
+        }
     }
 }

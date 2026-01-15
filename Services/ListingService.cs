@@ -2,6 +2,7 @@ using CampusLostAndFound.Data;
 using CampusLostAndFound.Dtos;
 using CampusLostAndFound.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 
 namespace CampusLostAndFound.Services
 {
@@ -97,6 +98,26 @@ namespace CampusLostAndFound.Services
             context.Listings.Remove(listing);
             await context.SaveChangesAsync();
             return true;
+        }
+
+        public async Task<MonthlyReportDto> GetMonthlyReportAsync(int year, int month)
+        {
+            var startDate = new DateTime(year, month, 1, 0, 0, 0, DateTimeKind.Utc);
+            var endDate = startDate.AddMonths(1);
+
+            var listings = await context.Listings
+                .Where(l => l.EventDate >= startDate && l.EventDate < endDate)
+                .ToListAsync();
+
+            var lostCount = listings.Count(l => l.Type == "Lost");
+            var foundCount = listings.Count(l => l.Type == "Found");
+
+            return new MonthlyReportDto(
+                $"{CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(month)} {year}",
+                lostCount,
+                foundCount,
+                listings.Count
+            );
         }
 
         private static ListingResponseDto Map(Listing l) =>

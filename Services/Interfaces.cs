@@ -8,6 +8,8 @@ namespace CampusLostAndFound.Services
         Task<ListingResponseDto?> GetByIdAsync(Guid id);
         Task<PaginatedListingsResponseDto> GetAllAsync(int page, int limit, string? type, string? search); Task<ListingResponseDto?> UpdateAsync(Guid id, ListingUpdateDto dto);
         Task<bool> DeleteAsync(Guid id);
+        Task<MonthlyReportDto> GetMonthlyReportAsync(int year, int month);
+
     }
 
     public interface IClaimService
