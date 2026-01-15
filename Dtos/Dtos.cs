@@ -11,4 +11,3 @@ namespace CampusLostAndFound.Dtos
     public record ClaimCreateDto(string RequesterName, string Message);
     public record ClaimResponseDto(Guid Id, Guid ListingId, string RequesterName, string Message, string Status, DateTime CreatedAt, DateTime? DecidedAt);
 }
-a
