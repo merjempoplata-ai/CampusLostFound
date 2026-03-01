@@ -411,8 +411,16 @@ using (var scope = app.Services.CreateScope())
     }
 
     // Runs every startup — only indexes listings where EmbeddingJson is still null, so it's safe to call always
-    var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
-    await mediator.Send(new CampusLostAndFound.Commands.ReindexListingsCommand());
+    try
+    {
+        var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+        await mediator.Send(new CampusLostAndFound.Commands.ReindexListingsCommand());
+    }
+    catch (Exception ex)
+    {
+        var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+        logger.LogWarning(ex, "Startup reindex skipped — OpenAI may not be configured.");
+    }
 }
 
 var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
