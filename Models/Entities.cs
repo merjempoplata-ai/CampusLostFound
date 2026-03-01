@@ -17,6 +17,10 @@ namespace CampusLostAndFound.Models
         public string Status { get; set; } = "Open"; // Open, Claimed, Closed, Hidden
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+        public string? EmbeddingJson { get; set; }        // float[] serialized as JSON text; null until indexed
+        public string? AiTags { get; set; }              // comma-separated AI-generated tags
+        public string? NormalizedLocation { get; set; }  // canonical location string set by n8n workflow
+        public string? AiSummary { get; set; }           // short AI-generated summary
     }
 
     public class Claim

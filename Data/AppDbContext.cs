@@ -17,6 +17,10 @@ namespace CampusLostAndFound.Data
                 e.Property(x => x.PhotoUrl).HasColumnName("photo_url");
                 e.Property(x => x.CreatedAt).HasColumnName("created_at");
                 e.Property(x => x.UpdatedAt).HasColumnName("updated_at");
+                e.Property(x => x.EmbeddingJson).HasColumnName("embedding_json");
+                e.Property(x => x.AiTags).HasColumnName("ai_tags");
+                e.Property(x => x.NormalizedLocation).HasColumnName("normalized_location");
+                e.Property(x => x.AiSummary).HasColumnName("ai_summary");
             });
 
             modelBuilder.Entity<Claim>(e =>

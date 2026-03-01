@@ -37,3 +37,8 @@ msbuild.wrn
 .vs/
 /.local
 /.config/dotnet-tools.json
+
+# Local secrets — never commit
+appsettings.Development.json
+appsettings.*.json
+!appsettings.json
