@@ -1,5 +1,6 @@
 using CampusLostAndFound.Data;
 using CampusLostAndFound.Infrastructure;
+using CampusLostAndFound.Mcp;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -25,6 +26,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddHttpClient<EmbeddingService>();
 builder.Services.AddScoped<SemanticRerankService>();
 builder.Services.AddScoped<N8nWebhookService>();
+builder.Services.AddScoped<McpToolExecutor>();
 
 var app = builder.Build();
 

@@ -25,13 +25,14 @@ No automated tests. Use Swagger at `/swagger` for manual API testing (always ena
 The app uses **MediatR CQRS** — controllers dispatch commands/queries; all business logic lives in handlers.
 
 ```
-Commands/   — IRequest<T> records (one per operation)
-Handlers/   — IRequestHandler<TRequest, TResult> implementations
-Controllers/— Thin HTTP layer; only validates input, sends to IMediator, maps results
+Commands/       — IRequest<T> records (one per operation)
+Handlers/       — IRequestHandler<TRequest, TResult> implementations
+Controllers/    — Thin HTTP layer; only validates input, sends to IMediator, maps results
 Infrastructure/ — Plain services not going through MediatR
-Models/     — Listing and Claim EF entities
-Dtos/       — C# records for request/response contracts
-Data/       — AppDbContext (PostgreSQL via Npgsql)
+Mcp/            — MCP-style tool calling: McpToolDefinitions, McpToolRegistry, McpToolExecutor
+Models/         — Listing and Claim EF entities
+Dtos/           — C# records for request/response contracts
+Data/           — AppDbContext (PostgreSQL via Npgsql)
 ```
 
 **Infrastructure services** (registered in `Program.cs`, injected directly into handlers):
@@ -68,10 +69,10 @@ The AI layer is built into Handlers (not a separate service layer):
 | `ClaimCheckHandler` | Scores a claim message against its listing; returns issues + suggestions |
 | `ModerationAnalyzeHandler` | Scans recent listings for policy violations |
 | `FaqHandler` | Generates FAQ + trends from recent listing data |
-| `AiAssistHandler` | OpenAI tool-use loop (single round-trip, two LLM calls); tools defined in `ToolRegistry.cs` |
+| `AiAssistHandler` | MCP-style tool-use loop (two LLM calls); tools declared in `Mcp/McpToolRegistry.cs`, executed by `Mcp/McpToolExecutor.cs` |
 | `ReindexListingsHandler` | Generates embeddings for all listings where `EmbeddingJson` is null |
 
-**AI tools** available to `AiAssistHandler`: `search_listings`, `get_listing`, `get_monthly_report`, `get_trends`.
+**MCP tools** available to `AiAssistHandler`: `search_listings`, `get_listing`, `get_monthly_report`, `get_trends`. See `mcp.tools.json` and `docs/MCP.md` for the full manifest and flow description.
 
 AI model is configurable: `Ai:AssistModel` → `Ai:ChatModel` → fallback `"gpt-4o-mini"`.
 

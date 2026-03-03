@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "MCP-style tool manifest for the Campus Lost & Found /api/ai/assist endpoint.",
+  "registryClass": "CampusLostAndFound.Mcp.McpToolRegistry",
+  "executorClass": "CampusLostAndFound.Mcp.McpToolExecutor",
+  "tools": [
+    {
+      "name": "search_listings",
+      "description": "Search for lost or found item listings on campus. Supports optional filtering by item type and free-text search across title, description, category, and location.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["Lost", "Found"],
+            "description": "Filter by listing type."
+          },
+          "search": {
+            "type": "string",
+            "description": "Free-text search across title, description, category, and location."
+          },
+          "page": {
+            "type": "integer",
+            "description": "Page number for pagination. Defaults to 1."
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Number of results per page. Defaults to 9."
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "get_listing",
+      "description": "Retrieve a single lost or found listing by its unique identifier.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The UUID of the listing to retrieve."
+          }
+        },
+        "required": ["id"]
+      }
+    },
+    {
+      "name": "get_monthly_report",
+      "description": "Get a summary report of lost and found listings for a given month and year.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "year": {
+            "type": "integer",
+            "description": "The four-digit calendar year (e.g. 2025)."
+          },
+          "month": {
+            "type": "integer",
+            "description": "The month as a number from 1 (January) to 12 (December)."
+          }
+        },
+        "required": ["year", "month"]
+      }
+    },
+    {
+      "name": "get_trends",
+      "description": "Get statistics and trends for lost and found items over a recent time period.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "days": {
+            "type": "integer",
+            "description": "Number of days to look back. Defaults to 30."
+          }
+        },
+        "required": []
+      }
+    }
+  ]
+}
